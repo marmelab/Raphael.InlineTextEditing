@@ -41,4 +41,6 @@ Remove the text field added with startEditing() and apply text modifications.
 
 TODO
 ----
+Handle a bigger length of input text
 Add textarea for multi-line text.
+Allow webfonts

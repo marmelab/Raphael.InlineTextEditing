@@ -5,9 +5,9 @@
  */
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
-		// Register AMD module
+		// AMD. Register as an anonymous module.
 		define(["jquery", "raphael"], function(jQuery, Raphael) {
-			// Use global variables if the locals are undefined
+			// Use global variables if the locals are undefined.
 			return factory(jQuery || root.jQuery, Raphael || root.Raphael);
 		});
 	} else {
@@ -54,22 +54,24 @@
 					}
 				}
 
-				// Check if there are implicit matrices
+
+				// Check if there is implicit matrix
 				for(var i = 0, length = subject._.transform.length; i < length; i++){
 					if(subject._.transform[i][0].toLowerCase() == 'm'){
 						var matrixComponents = subject._.transform[i].slice(1);
 
-						// Retrieve transformation from matrix elements
+						// Perform transformation from matrix elements
 						rotation  += -1 * Math.asin(matrixComponents[2]) * 180 / Math.PI;
 						scaleX    *= matrixComponents[0] / Math.cos(rotation*Math.PI/180);
 						scaleY    *= matrixComponents[3] / Math.cos(rotation*Math.PI/180);
+
+						transformOrder = {r: 'r', s:'s'};
 					}
 				}
 
-				// Remove transformation on the current element to get original dimension
+				// Remove transformation on the current element to retrieve original dimension
 				$(subject.node).attr('transform', null);
 
-				// Perform translation directly with left & top attribute
 				var originalBbox  = subject._getBBox();
 				var width         = originalBbox.width;
 				var height        = originalBbox.height;
@@ -78,6 +80,7 @@
 				var sTransform    = '';
 				var sOrigin       = 'center center';
 				var oTransform    = {
+					//	t : 'translate('+(translateX)+'px, '+(translateY)+'px)',
 					r : 'rotate('+rotation+'deg)',
 					s : 'scale('+scaleX+', '+scaleY+')'
 				};
@@ -93,7 +96,7 @@
 				$(subject.node).attr('transform', matrix);
 				subject.hide();
 
-				// Prepare input's styles
+				// Prepare input styles
 				var oStyles = {
 					position: 'absolute',
 					background: 'none',
@@ -114,9 +117,10 @@
 					'-o-transform' : sTransform,
 					'-webkit-transform' : sTransform,
 					'transform' : sTransform
+
 				};
 
-				// Retrieve elements font styles
+				// Retrieve font styles
 				var aFontAttributes = ['font', 'font-family', 'font-size', 'font-style', 'font-weight', 'font-variant', 'line-height'];
 
 				for(var i = 0, length = aFontAttributes.length; i < length; i++){
@@ -147,7 +151,6 @@
 				$container.append(this.$input);
 				this.$input.focus();
 
-				// Return the created input
 				return this.$input;
 			},
 
@@ -155,20 +158,18 @@
 			 * Apply text modification and remove associated input
 			 */
 			stopEditing: function(){
-				var text = this.$input.val();
 				// Set the new the value
-				subject.attr('text', text);
+				subject.attr('text', this.$input.val());
 
 				// Show the text element
 				subject.show();
 
 				// Remove text input
 				this.$input.remove();
-
-				return text;
 			}
 		};
 
 		return subject.inlineTextEditing;
 	}
+
 }));
