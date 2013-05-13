@@ -1,7 +1,7 @@
 /*
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/mit-license.php
- *
+ * Inline text editing tool for Raphaël 2.0 & compatible with Raphaël Free transform.
+ * Source: https://github.com/marmelab/Raphael.InlineTextEditing
+ * Licensed under the MIT license
  */
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
