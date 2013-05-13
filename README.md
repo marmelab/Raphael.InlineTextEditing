@@ -1,4 +1,4 @@
-Raphaël.inlineTextEditing
+Raphaël.InlineTextEditing
 ====================
 
 Inline text editing tool for [Raphaël 2.0](http://raphaeljs.com/) & compatible with [Raphaël Free transform](https://github.com/ElbertF/Raphael.FreeTransform).
