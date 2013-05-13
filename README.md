@@ -4,7 +4,7 @@ Raphaël.InlineTextEditing
 Inline text editing tool for [Raphaël 2.0](http://raphaeljs.com/) & compatible with [Raphaël Free transform](https://github.com/ElbertF/Raphael.FreeTransform).
 Support any types of transformations.
 
- *Licensed under the [MIT license](http://www.opensource.org/licenses/mit-license.php).*
+ *Licensed under the [MIT license](LICENSE).*
 
 Example
 -------
