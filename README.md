@@ -1,9 +1,9 @@
 Inline Text Editing With Raphaël.js
 ==================================
 
-[Demo](http://marmelab.github.com/RaphaelInlineTextEditing)
+[Demo](http://marmelab.github.com/Raphael.InlineTextEditing)
 
-[Source](https://github.com/marmelab/RaphaelInlineTextEditing)
+[Source](https://github.com/marmelab/Raphael.InlineTextEditing)
 
 You can easily do inline editing in pure HTML, but how about enabling the same feature in SVG, and making it available on all major browsers?
 
@@ -52,7 +52,7 @@ Next, we have to retrieve the transformations (rotation / translation & scale) o
 
 This property returns the *rotation* and the *scale* of the element. To retrieve the *translation* we have to parse each transformation to point out the one that begin by a 't'.
 
-### The Matrix Is Everywhere. It Is All Around Us
+## The Matrix Is Everywhere. It Is All Around Us
 
 The [Element.Transform](http://raphaeljs.com/reference.html#Element.transform) method can take a matrix parameter, as follows:
 
