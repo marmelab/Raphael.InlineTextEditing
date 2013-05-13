@@ -13,12 +13,12 @@ Example
 var paper = Raphael(document.getElementById('container'), 740, 540);
 var text = paper.text(250, 250, 'Hello').attr({'text-anchor': 'start', 'font-size': '25px'}).transform(['T', 242, -174, 'R', 36.9973, 'S', 2.0631, 1]);
 
-// Initialise text editing for the text
+// Initialize text editing for the text element
 paper.inlineTextEditing(text);
 
 // Start inline editing on click
 text.click(function(){
-	// Retrieve created text field
+	// Retrieve created <input type=text> field
 	var input = this.inlineTextEditing.startEditing();
 
 	input.blur(function(e){
@@ -31,7 +31,7 @@ text.click(function(){
 Functions
 ---------
 #### `startEditing()`
-Hide initialized text and add HTML input text at the same position
+Hide initialized text and add HTML input text at the same position.
 
 Returns this text field.
 
@@ -41,6 +41,6 @@ Remove the text field added with startEditing() and apply text modifications.
 
 TODO
 ----
-Handle a bigger length of input text
-Add textarea for multi-line text.
-Allow webfonts
+* Handle a bigger length of input text
+* Add textarea for multi-line text.
+* Allow webfonts
