@@ -4,6 +4,8 @@ Raphaël.InlineTextEditing
 Inline text editing tool for [Raphaël 2.0](http://raphaeljs.com/) & compatible with [Raphaël Free transform](https://github.com/ElbertF/Raphael.FreeTransform).
 Supports SVG text elements with any type of transformation (scale, rotate, translate, matrix).
 
+[See demo](http://marmelab.github.io/Raphael.InlineTextEditing/)
+
  *Licensed under the [MIT license](LICENSE).*
 
 Example
