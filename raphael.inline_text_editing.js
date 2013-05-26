@@ -75,8 +75,8 @@
 				var originalBbox  = subject._getBBox();
 				var width         = originalBbox.width;
 				var height        = originalBbox.height;
-				var x             = subject.attrs.x + translateX;
-				var y             = subject.attrs.y - height / 2 + translateY;
+				var x             = $container.offset().left + subject.attrs.x + translateX;
+				var y             = $container.offset().top + subject.attrs.y - height / 2 + translateY;
 				var sTransform    = '';
 				var sOrigin       = 'center center';
 				var oTransform    = {
