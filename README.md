@@ -23,10 +23,10 @@ text.click(function(){
 	// Retrieve created <input type=text> field
 	var input = this.inlineTextEditing.startEditing();
 
-	input.blur(function(e){
+	input.addEventListener("blur", function(e){
 		// Stop inline editing after blur on the text field
 		text.inlineTextEditing.stopEditing();
-	});
+	}, true);
 });
 ```
 

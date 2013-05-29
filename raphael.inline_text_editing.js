@@ -6,15 +6,15 @@
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
 		// AMD. Register as an anonymous module.
-		define(["jquery", "raphael"], function(jQuery, Raphael) {
+		define(["raphael"], function(Raphael) {
 			// Use global variables if the locals are undefined.
-			return factory(jQuery || root.jQuery, Raphael || root.Raphael);
+			return factory(Raphael || root.Raphael);
 		});
 	} else {
-		// RequireJS isn't being used. Assume jQuery and Raphael are loaded in <script> tags
-		factory(jQuery, Raphael);
+		// RequireJS isn't being used. Assume Raphael is loaded in <script> tag
+		factory(Raphael);
 	}
-}(this, function($, Raphael) {
+}(this, function(Raphael) {
 
 	Raphael.fn.inlineTextEditing = function(subject, options, callback) {
 
@@ -23,7 +23,7 @@
 
 		subject.inlineTextEditing = {
 			paper : paper,
-			$input: null,
+			input: null,
 
 			/**
 			 * Start text editing by hiding the current element and adding a text field at the same position
@@ -31,7 +31,7 @@
 			 */
 			startEditing: function(){
 				// Store Raphael container above the svg
-				var $container      = $(this.paper.canvas).parent();
+				var container      = this.paper.canvas.parentNode;
 				var translateX	    = 0;
 				var translateY	    = 0;
 				var transformOrder  = {};
@@ -40,7 +40,7 @@
 				var rotation        = subject._.deg;
 				var scaleX          = subject._.sx;
 				var scaleY          = subject._.sy;
-				var matrix          = $(subject.node).attr('transform');
+				var matrix          = subject.node.getAttribute('transform');
 
 				// Check if the element has translations & retrieve transformations order
 				for(var i = 0, length = subject._.transform.length; i < length; i++){
@@ -70,13 +70,13 @@
 				}
 
 				// Remove transformation on the current element to retrieve original dimension
-				$(subject.node).attr('transform', null);
+				subject.node.removeAttribute('transform');
 
 				var originalBbox  = subject._getBBox();
 				var width         = originalBbox.width;
 				var height        = originalBbox.height;
-				var x             = $container.offset().left + subject.attrs.x + translateX;
-				var y             = $container.offset().top + subject.attrs.y - height / 2 + translateY;
+				var x             = container.offsetLeft + subject.attrs.x + translateX;
+				var y             = container.offsetTop + subject.attrs.y - height / 2 + translateY;
 				var sTransform    = '';
 				var sOrigin       = 'center center';
 				var oTransform    = {
@@ -93,7 +93,7 @@
 				}
 
 				// Re-apply stored transformation to the element and hide it
-				$(subject.node).attr('transform', matrix);
+				subject.node.setAttribute("transform", matrix);
 				subject.hide();
 
 				// Prepare input styles
@@ -141,31 +141,31 @@
 				}
 
 				// Create an input element with theses styles
-				this.$input = $('<input />', {
-					type: "text",
-					value: subject.attrs.text ? subject.attrs.text.replace(/\'/g,"\\\'") : '',
-					style: sStyles
-				});
+				this.input = document.createElement("input");
+				this.input.setAttribute("type", "text");
+				this.input.setAttribute("value", subject.attrs.text ? subject.attrs.text.replace(/\'/g,"\\\'") : '');
+				this.input.setAttribute("style", sStyles);
 
 				// Add the input in the container and apply focus on it
-				$container.append(this.$input);
-				this.$input.focus();
+				container.appendChild(this.input);
+				this.input.focus();
 
-				return this.$input;
+				return this.input;
 			},
 
 			/**
 			 * Apply text modification and remove associated input
 			 */
 			stopEditing: function(){
+
 				// Set the new the value
-				subject.attr('text', this.$input.val());
+				subject.attr("text", this.input.value);
 
 				// Show the text element
 				subject.show();
 
 				// Remove text input
-				this.$input.remove();
+				this.input.parentNode.removeChild(this.input);
 			}
 		};
 
