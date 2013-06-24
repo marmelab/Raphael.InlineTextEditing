@@ -1,20 +1,20 @@
 /*
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/mit-license.php
- *
+ * Inline text editing tool for Raphaël 2.0 & compatible with Raphaël Free transform.
+ * Source: https://github.com/marmelab/Raphael.InlineTextEditing
+ * Licensed under the MIT license
  */
 (function (root, factory) {
 	if (typeof define === "function" && define.amd) {
-		// Register AMD module
-		define(["jquery", "raphael"], function(jQuery, Raphael) {
-			// Use global variables if the locals are undefined
-			return factory(jQuery || root.jQuery, Raphael || root.Raphael);
+		// AMD. Register as an anonymous module.
+		define(["raphael"], function(Raphael) {
+			// Use global variables if the locals are undefined.
+			return factory(Raphael || root.Raphael);
 		});
 	} else {
-		// RequireJS isn't being used. Assume jQuery and Raphael are loaded in <script> tags
-		factory(jQuery, Raphael);
+		// RequireJS isn't being used. Assume Raphael is loaded in <script> tag
+		factory(Raphael);
 	}
-}(this, function($, Raphael) {
+}(this, function(Raphael) {
 
 	Raphael.fn.inlineTextEditing = function(subject, options, callback) {
 
@@ -23,7 +23,7 @@
 
 		subject.inlineTextEditing = {
 			paper : paper,
-			$input: null,
+			input: null,
 
 			/**
 			 * Start text editing by hiding the current element and adding a text field at the same position
@@ -31,7 +31,7 @@
 			 */
 			startEditing: function(){
 				// Store Raphael container above the svg
-				var $container      = $(this.paper.canvas).parent();
+				var container      = this.paper.canvas.parentNode;
 				var translateX	    = 0;
 				var translateY	    = 0;
 				var transformOrder  = {};
@@ -40,7 +40,7 @@
 				var rotation        = subject._.deg;
 				var scaleX          = subject._.sx;
 				var scaleY          = subject._.sy;
-				var matrix          = $(subject.node).attr('transform');
+				var matrix          = subject.node.getAttribute('transform');
 
 				// Check if the element has translations & retrieve transformations order
 				for(var i = 0, length = subject._.transform.length; i < length; i++){
@@ -54,30 +54,33 @@
 					}
 				}
 
-				// Check if there are implicit matrices
+
+				// Check if there is implicit matrix
 				for(var i = 0, length = subject._.transform.length; i < length; i++){
 					if(subject._.transform[i][0].toLowerCase() == 'm'){
 						var matrixComponents = subject._.transform[i].slice(1);
 
-						// Retrieve transformation from matrix elements
+						// Perform transformation from matrix elements
 						rotation  += -1 * Math.asin(matrixComponents[2]) * 180 / Math.PI;
 						scaleX    *= matrixComponents[0] / Math.cos(rotation*Math.PI/180);
 						scaleY    *= matrixComponents[3] / Math.cos(rotation*Math.PI/180);
+
+						transformOrder = {r: 'r', s:'s'};
 					}
 				}
 
-				// Remove transformation on the current element to get original dimension
-				$(subject.node).attr('transform', null);
+				// Remove transformation on the current element to retrieve original dimension
+				subject.node.removeAttribute('transform');
 
-				// Perform translation directly with left & top attribute
 				var originalBbox  = subject._getBBox();
 				var width         = originalBbox.width;
 				var height        = originalBbox.height;
-				var x             = subject.attrs.x + translateX;
-				var y             = subject.attrs.y - height / 2 + translateY;
+				var x             = container.offsetLeft + subject.attrs.x + translateX;
+				var y             = container.offsetTop + subject.attrs.y - height / 2 + translateY;
 				var sTransform    = '';
 				var sOrigin       = 'center center';
 				var oTransform    = {
+					//	t : 'translate('+(translateX)+'px, '+(translateY)+'px)',
 					r : 'rotate('+rotation+'deg)',
 					s : 'scale('+scaleX+', '+scaleY+')'
 				};
@@ -90,10 +93,10 @@
 				}
 
 				// Re-apply stored transformation to the element and hide it
-				$(subject.node).attr('transform', matrix);
+				subject.node.setAttribute("transform", matrix);
 				subject.hide();
 
-				// Prepare input's styles
+				// Prepare input styles
 				var oStyles = {
 					position: 'absolute',
 					background: 'none',
@@ -116,8 +119,8 @@
 					'transform' : sTransform
 				};
 
-				// Retrieve elements font styles
-				var aFontAttributes = ['font', 'font-family', 'font-size', 'font-style', 'font-weight', 'font-variant', 'line-height'];
+				// Retrieve font styles
+				var aFontAttributes = ['font', 'font-family', 'font-size', 'font-style', 'font-weight', 'font-variant'/*, 'line-height'*/];
 
 				for(var i = 0, length = aFontAttributes.length; i < length; i++){
 					var attribute = aFontAttributes[i];
@@ -137,38 +140,53 @@
 				}
 
 				// Create an input element with theses styles
-				this.$input = $('<input />', {
-					type: "text",
-					value: subject.attrs.text ? subject.attrs.text.replace(/\'/g,"\\\'") : '',
-					style: sStyles
-				});
+				this.input = document.createElement("textarea");
+				this.input.value = subject.attrs.text ? subject.attrs.text.replace(/\'/g,"\\\'") : '';
+				this.input.setAttribute("style", sStyles);
+
+				this.input.addEventListener('keyup', this._handleKeyDown.bind(this));
 
 				// Add the input in the container and apply focus on it
-				$container.append(this.$input);
-				this.$input.focus();
+				container.appendChild(this.input);
+				this.input.focus();
 
-				// Return the created input
-				return this.$input;
+				return this.input;
 			},
 
 			/**
 			 * Apply text modification and remove associated input
 			 */
 			stopEditing: function(){
-				var text = this.$input.val();
+
 				// Set the new the value
-				subject.attr('text', text);
+				subject.attr("text", this.input.value);
 
 				// Show the text element
 				subject.show();
 
 				// Remove text input
-				this.$input.remove();
+				this.input.parentNode.removeChild(this.input);
+			},
 
-				return text;
+			_handleKeyDown: function(e){
+				var tmp               = document.createElement("span");
+				var text              = this.input.value;
+				tmp.setAttribute('style', this.input.style.cssText);
+				tmp.style.height      = null;
+				tmp.style.width       = null;
+				tmp.style.visibility  = 'hidden';
+				tmp.innerHTML         = text.split('\n').join('<br />');
+
+				this.input.parentNode.appendChild(tmp);
+
+				this.input.style.width = tmp.offsetWidth + "px";
+				this.input.style.height = tmp.offsetHeight + "px";
+
+				tmp.parentNode.removeChild(tmp);
 			}
 		};
 
 		return subject.inlineTextEditing;
 	}
+
 }));

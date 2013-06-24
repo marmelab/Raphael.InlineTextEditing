@@ -1,20 +1,13 @@
-#canvas_container {
-  position: relative;
-  width: 740px;
-  height: 540px;
-  border: 1px solid #aaa;
-  padding: 0px;
-  margin: 0px;
-}
-
-input[type="text"],
-input[type="text"]:hover,
-input[type="text"]:active,
-input[type="text"]:focus {
+textarea,
+textarea:hover,
+textarea:active,
+textarea:focus {
   padding: 0;
   margin: 0;
   border: none;
   background: none;
+  resize: none;
+  overflow: hidden;
 
   outline:0px !important;
   -webkit-appearance:none;
