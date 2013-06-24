@@ -117,11 +117,10 @@
 					'-o-transform' : sTransform,
 					'-webkit-transform' : sTransform,
 					'transform' : sTransform
-
 				};
 
 				// Retrieve font styles
-				var aFontAttributes = ['font', 'font-family', 'font-size', 'font-style', 'font-weight', 'font-variant', 'line-height'];
+				var aFontAttributes = ['font', 'font-family', 'font-size', 'font-style', 'font-weight', 'font-variant'/*, 'line-height'*/];
 
 				for(var i = 0, length = aFontAttributes.length; i < length; i++){
 					var attribute = aFontAttributes[i];
@@ -141,10 +140,11 @@
 				}
 
 				// Create an input element with theses styles
-				this.input = document.createElement("input");
-				this.input.setAttribute("type", "text");
-				this.input.setAttribute("value", subject.attrs.text ? subject.attrs.text.replace(/\'/g,"\\\'") : '');
+				this.input = document.createElement("textarea");
+				this.input.value = subject.attrs.text ? subject.attrs.text.replace(/\'/g,"\\\'") : '';
 				this.input.setAttribute("style", sStyles);
+
+				this.input.addEventListener('keyup', this._handleKeyDown.bind(this));
 
 				// Add the input in the container and apply focus on it
 				container.appendChild(this.input);
@@ -166,6 +166,23 @@
 
 				// Remove text input
 				this.input.parentNode.removeChild(this.input);
+			},
+
+			_handleKeyDown: function(e){
+				var tmp               = document.createElement("span");
+				var text              = this.input.value;
+				tmp.setAttribute('style', this.input.style.cssText);
+				tmp.style.height      = null;
+				tmp.style.width       = null;
+				tmp.style.visibility  = 'hidden';
+				tmp.innerHTML         = text.split('\n').join('<br />');
+
+				this.input.parentNode.appendChild(tmp);
+
+				this.input.style.width = tmp.offsetWidth + "px";
+				this.input.style.height = tmp.offsetHeight + "px";
+
+				tmp.parentNode.removeChild(tmp);
 			}
 		};
 
