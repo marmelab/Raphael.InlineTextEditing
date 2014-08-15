@@ -93,7 +93,10 @@
 				}
 
 				// Re-apply stored transformation to the element and hide it
-				subject.node.setAttribute("transform", matrix);
+				if (matrix) {
+					subject.node.setAttribute("transform", matrix);
+				}
+
 				subject.hide();
 
 				// Prepare input styles
